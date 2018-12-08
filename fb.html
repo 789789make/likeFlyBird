@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Document</title>
+	<style type="text/css">
+		*{
+			margin: 0;
+			padding:0;
+		}
+		body{
+			overflow: hidden;
+		}
+		#bird{
+			height: 5%;
+			width: 3%;
+			position: absolute;
+			background: red;
+			left: calc(50% - 50px);
+			top: calc(50% - 5%);
+		}
+
+		.topGuan{
+			position: absolute;
+			top: 0px;
+			width: 50px;
+			left: 100%;
+			background: yellow;
+		}
+		.bottomGuan{
+			position: absolute;
+			bottom: 0px;
+			width: 50px;
+			left: 100%;
+			background: pink;
+		}
+	</style>
+	<script type="text/javascript" src="boom.js"></script>
+</head>
+<body>
+	<div id="bird"></div>	
+	<script type="text/javascript">
+		var guanTimer=null;
+		var addguanTimer=null;
+		var guanTimer1=800;
+		var die =false;
+		function birdfly(){
+			speed+=0.2;
+			var t=bird.offsetTop+speed;
+			if(t<0){
+				t=0
+				die=true;
+				speed=0;
+			}
+			else if(t>=innerHeight-bird.offsetHeight){
+				die=true;
+				t=innerHeight-bird.offsetHeight;
+				bird.style.top=t+'px';
+				clearInterval(addguanTimer);
+				clearInterval(timer);
+				setTimeout(function(){
+					alert('您死了');
+				},)
+			};
+			if(die){
+				clearInterval(guanTimer);
+			}
+			bird.style.top=t+'px';
+		}
+		function randomHeight(min,max){
+           return parseInt(Math.random()*(max-min+1)+min);
+		}
+       function addGuan(){
+       var h=randomHeight(10,40);
+       var odivtg=document.createElement('div');
+       odivtg.className='topGuan';
+       odivtg.style.height=h+'%';
+       document.body.appendChild(odivtg);
+       var odivtb=document.createElement('div');
+       odivtb.style.height=100-h-20+'%';
+       odivtb.className='bottomGuan';
+       document.body.appendChild(odivtb);
+       odivtg.leftDate=odivtb.leftDate=100;
+       guanTimer1-=50;
+       	document.title=guanTimer1;
+       	if(guanTimer1<300){
+       		guanTimer1=300
+       	}
+       }
+       addGuan();
+       var sudu=0.1;
+       
+
+       addguanTimer=setInterval(addGuan,400);
+       guanTimer=setInterval(function(){
+       	var allGuan=document.querySelectorAll('.topGuan, .bottomGuan');
+       	
+       	sudu+=0.0001;
+       
+          for(var i=0;i<allGuan.length;i++){
+
+          	allGuan[i].leftDate-=sudu;
+          
+          	allGuan[i].style.left=allGuan[i].leftDate+'%';
+            
+            
+     
+
+
+          	if(allGuan[i].leftDate==-10){
+          		document.body.removeChild(allGuan[i])
+          	}
+
+          	if(boom(allGuan[i],bird)){
+          		bird.style.top=allGuan[i].offsetHeight;
+          		speed=0;
+          		clearInterval(addguanTimer);
+          		clearInterval(guanTimer);
+          		clearInterval(timer);
+          		setTimeout(function(){
+          			timer=setInterval(function(){
+          				birdfly();
+          			},10)
+          		},500)
+            	die=true;
+          	}
+          }
+       },)
+		var timer=null;
+		var speed=0;
+		timer=setInterval(function(){
+			birdfly();
+		},10);
+		window.onkeydown=function(){
+			if(die){
+				return;
+			}
+			speed-=8;
+		}
+	</script>
+</body>
+</html>
